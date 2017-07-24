@@ -4,6 +4,7 @@ var app = express();
 var redis = require("redis");
 var sub = redis.createClient(), pub = redis.createClient();
 var crypto = require('crypto');
+sub.subscribe("GetExtInfoReply");
 
 app.get('/query', function(req, res){
   var rand_hash = crypto.randomBytes(20).toString('hex');
@@ -14,7 +15,6 @@ app.get('/query', function(req, res){
   else {
     res.send('{"status":"error", "reason":"no url param"}');
   }
-  sub.subscribe("GetExtInfoReply");
   sub.on("message", function (channel, message) {
     console.log(message);
     var replyJSON = JSON.parse(message);
